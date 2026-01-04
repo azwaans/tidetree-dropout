@@ -135,7 +135,7 @@
         <mergepoint id='aux-panels'/>
 
 
-        <!--    		<alignmentProvider id="Add SciPhy Data" spec='beastfx.app.inputeditor.BeautiAlignmentProvider'-->
+        <!--    		<alignmentProvider id="Add TiDeTree Data" spec='beastfx.app.inputeditor.BeautiAlignmentProvider'-->
         <!--                               template='@PartitionTemplate'/>-->
         <alignmentProvider id="Add Alignment" spec='BeautiAlignmentProvider' template='@PartitionTemplate'/>
 
