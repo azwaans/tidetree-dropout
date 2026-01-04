@@ -299,6 +299,9 @@ public class CustomCore extends BeerLikelihoodCore {
             }
         }
         setCurrentNodePartials(parent.getNr(), nodePartials);
+        if (useScaling) {
+            scalePartials(parent.getNr());
+        }
     }
 
     void calculatePartialsForCrossBranches(Node parent, Node child, boolean bool1, boolean bool2,
@@ -405,6 +408,9 @@ public class CustomCore extends BeerLikelihoodCore {
             }
         }
         setCurrentNodePartials(parent.getNr(), nodePartials);
+        if (useScaling) {
+            scalePartials(parent.getNr());
+        }
     }
 
     double[] calculatePartialsBeforeParent(Node parent, Node child, int i, int childIndex, double[] intNodeTimes, double[] jointBranchRates, int nIntermediateNodes, double[][] helperNodePartials,

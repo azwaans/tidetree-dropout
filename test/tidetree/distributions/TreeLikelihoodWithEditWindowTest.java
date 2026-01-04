@@ -481,7 +481,7 @@ public class TreeLikelihoodWithEditWindowTest {
         //init likelihood
         likelihood4 = new TreeLikelihoodWithEditWindow();
         likelihood4.initByName("data", alignment2, "tree", tree2,
-                "siteModel", siteM4, "branchRateModel", clockModel);
+                "siteModel", siteM4, "branchRateModel", clockModel, "scaling", "none");
 
 
         double logP = likelihood4.calculateLogP();
@@ -557,7 +557,7 @@ public class TreeLikelihoodWithEditWindowTest {
 
         likelihoodNegInf = new TreeLikelihoodWithEditWindow();
         likelihoodNegInf.initByName("data", alignment4, "tree", treeImpossible,
-                "siteModel", siteM, "branchRateModel", clockModel);
+                "siteModel", siteM, "branchRateModel", clockModel, "scaling", "none");
 
         double logP = likelihoodNegInf.calculateLogP();
 
@@ -610,7 +610,7 @@ public class TreeLikelihoodWithEditWindowTest {
 
         likelihoodNegInf = new TreeLikelihoodWithEditWindow();
         likelihoodNegInf.initByName("data", alignment, "tree", treeImpossible,
-                "siteModel", siteM, "branchRateModel", clockModel);
+                "siteModel", siteM, "branchRateModel", clockModel, "scaling", "none");
 
         double logP = likelihoodNegInf.calculateLogP();
 
