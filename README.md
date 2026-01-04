@@ -1,7 +1,7 @@
 TiDeTree
 ========
 
-TiDeTree is a [BEAST 2[(https://www.beast2.org/) package that enables inference of time-scaled single-cell phylogenies and population dynamic parameters such as cell division, death, and differentiation rates from genetic lineage tracing data.
+TiDeTree is a [BEAST 2](https://www.beast2.org/) package that enables inference of time-scaled single-cell phylogenies and population dynamic parameters such as cell division, death, and differentiation rates from genetic lineage tracing data.
 
 For further information please check out our [publication](https://doi.org/10.1098/rspb.2022.1844) or [preprint](https://doi.org/10.1101/2022.02.14.480422) and find the code to reproduce the analyses in [this GitHub repo](https://github.com/seidels/tidetree-material).
 
