@@ -33,6 +33,11 @@ If you want to apply TiDeTree to your data, check out the tutorial [here](https:
 
 **You're all set to run analyses with TiDeTree!**
 
+## Tutorial
+
+A complete tutorial for TiDeTree including the setup of an analysis with the graphical user interface BEAUTi is available on the [Taming the BEAST website](https://taming-the-beast.org/tutorials/TiDeTree-Tutorial/).
+
+For a mini tutorial, please read on.
 
 Mini Tutorial
 ------------
