@@ -30,6 +30,10 @@ public class EditAndSilencingModel extends SubstitutionModel.Base {
                 "Rate at which barcodes are silenced " +
                         "throughout the entire experiment", Input.Validate.REQUIRED);
 
+    final public Input<RealParameter> missingProbabilityInput = new Input<>("missingProbability",
+            "Probability for a barcode to be lost " +
+                    "at the end of the experiment/upon sequencing", Input.Validate.OPTIONAL);
+
 
         public Input<RealParameter> editHeightInput = new Input<>("editHeight",
                 "Duration between the onset of edit and sampling of the cells", Input.Validate.REQUIRED);
@@ -47,6 +51,7 @@ public class EditAndSilencingModel extends SubstitutionModel.Base {
 
         RealParameter editHeightP;
         RealParameter editDurationP;
+        RealParameter missingProb;
         double[] frequencies;
         double[][] rateMatrix;
         RealParameter editRate_;
@@ -61,6 +66,21 @@ public class EditAndSilencingModel extends SubstitutionModel.Base {
 
         editRate_ = editRatesInput.get();
         silencingRate_ = silencingRateInput.get();
+
+
+
+        if (missingProbabilityInput.get() == null) {
+            missingProb = new RealParameter("0.0");
+        }
+        else {
+            missingProb = missingProbabilityInput.get();
+            double missingProbability = missingProb.getValue();
+            if ((missingProbability < 0) || (missingProbability > 1.0)) {
+                throw new RuntimeException("missing probability must be > 0 and <= 1.0!");
+            }
+        }
+
+
 
         // assert positive rates
         //double sumEditRates = 0;
@@ -115,6 +135,13 @@ public class EditAndSilencingModel extends SubstitutionModel.Base {
         }
         // set final diagonal element to 1
         matrix[nrOfStates * nrOfStates - 1] = 1;
+    }
+
+    /*
+   get dropout probability
+    */
+    public double getDropoutProbability(){
+       return missingProb.getValue();
     }
 
     //Rename time to height

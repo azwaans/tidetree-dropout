@@ -61,6 +61,7 @@ public class SimulatedAlignment extends Alignment {
             "origin", "Start of the process, usually the experiment",
             Input.Validate.OPTIONAL);
 
+
     public Input<SiteModel> siteModelInput = new Input<>(
             "siteModel",
             "Site model to use in simulation.",
@@ -314,6 +315,20 @@ public class SimulatedAlignment extends Alignment {
             }
 
             if (child.isLeaf()) {
+
+                // simulate potential dropout
+                for (int i = 0; i < childSequence.length; i++) {
+
+                    double indicator = Randomizer.nextDouble();
+
+                    //see if the bcode goes missing
+                    if (indicator < scarringModel.getDropoutProbability()) {
+                        //the silenced/missing state is nStates - 1
+                        childSequence[i] = nStates - 1;
+                    }
+                }
+
+
                 System.arraycopy(childSequence, 0,
                         regionAlignment[child.getNr()], 0, childSequence.length);
             } else {
