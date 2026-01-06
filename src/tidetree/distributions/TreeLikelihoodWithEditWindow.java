@@ -295,7 +295,7 @@ public class TreeLikelihoodWithEditWindow extends GenericTreeLikelihood {
                                 m_siteModel, substitutionModel, branchRate);
 
                     }else {
-                        likelihoodCore.calculatePartials(child1, child2, node);
+                        likelihoodCore.calculatePartials(child1, child2, node, substitutionModel.getDropoutProbability());
                     }
                 } else {
                     throw new RuntimeException("Error TreeLikelihood 201: Site categories not supported");
@@ -333,7 +333,7 @@ public class TreeLikelihoodWithEditWindow extends GenericTreeLikelihood {
                                         m_siteModel, substitutionModel, branchRate);
 
                             }else {
-                                likelihoodCore.calculatePartials(node, originNode);
+                                likelihoodCore.calculatePartials(node, originNode, substitutionModel.getDropoutProbability());
                             }
                         }
                         //node = rootNode;

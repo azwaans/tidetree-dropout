@@ -46,7 +46,7 @@ public class CustomCore extends BeerLikelihoodCore {
      * @param child2 the 'child 2' node
      * @param node the 'parent' node
      */
-    public void calculatePartials(Node child1, Node child2, Node node) {
+    public void calculatePartials(Node child1, Node child2, Node node, double dropoutProb) {
 
         int nodeIndex1 = child1.getNr();
         int nodeIndex2 = child2.getNr();
@@ -57,17 +57,17 @@ public class CustomCore extends BeerLikelihoodCore {
                     calculateStatesStatesPruning(
                             states[nodeIndex1], matrices[currentMatrixIndex[nodeIndex1]][nodeIndex1],
                             states[nodeIndex2], matrices[currentMatrixIndex[nodeIndex2]][nodeIndex2],
-                            partials[currentPartialsIndex[nodeIndex3]][nodeIndex3]);
+                            partials[currentPartialsIndex[nodeIndex3]][nodeIndex3], dropoutProb);
                 } else {
                     calculateStatesPartialsPruning(states[nodeIndex1], matrices[currentMatrixIndex[nodeIndex1]][nodeIndex1],
                             partials[currentPartialsIndex[nodeIndex2]][nodeIndex2], matrices[currentMatrixIndex[nodeIndex2]][nodeIndex2],
-                            partials[currentPartialsIndex[nodeIndex3]][nodeIndex3]);
+                            partials[currentPartialsIndex[nodeIndex3]][nodeIndex3], dropoutProb);
                 }
             } else {
                 if (states[nodeIndex2] != null) {
                     calculateStatesPartialsPruning(states[nodeIndex2], matrices[currentMatrixIndex[nodeIndex2]][nodeIndex2],
                             partials[currentPartialsIndex[nodeIndex1]][nodeIndex1], matrices[currentMatrixIndex[nodeIndex1]][nodeIndex1],
-                            partials[currentPartialsIndex[nodeIndex3]][nodeIndex3]);
+                            partials[currentPartialsIndex[nodeIndex3]][nodeIndex3], dropoutProb );
                 } else {
                     calculatePartialsPartialsPruning(partials[currentPartialsIndex[nodeIndex1]][nodeIndex1], matrices[currentMatrixIndex[nodeIndex1]][nodeIndex1],
                             partials[currentPartialsIndex[nodeIndex2]][nodeIndex2], matrices[currentMatrixIndex[nodeIndex2]][nodeIndex2],
@@ -94,16 +94,16 @@ public class CustomCore extends BeerLikelihoodCore {
 //        }
     }
 
-    public void calculatePartials(Node child1, Node node) {
+    public void calculatePartials(Node child1, Node node, double dropoutProb) {
 
         int nodeIndex1 = child1.getNr();
         int nodeIndex3 = node.getNr();
 
         if (states[nodeIndex1] != null) {
-            calculateStatesPruning(states[nodeIndex1],matrices[currentMatrixIndex[nodeIndex1]][nodeIndex1],partials[currentPartialsIndex[nodeIndex3]][nodeIndex3]);
+            calculateStatesPruning(states[nodeIndex1],matrices[currentMatrixIndex[nodeIndex1]][nodeIndex1],partials[currentPartialsIndex[nodeIndex3]][nodeIndex3],dropoutProb);
         } else {
             calculatePartialsPruning(partials[currentPartialsIndex[nodeIndex1]][nodeIndex1],
-            matrices[currentMatrixIndex[nodeIndex1]][nodeIndex1], partials[currentPartialsIndex[nodeIndex3]][nodeIndex3]);
+            matrices[currentMatrixIndex[nodeIndex1]][nodeIndex1], partials[currentPartialsIndex[nodeIndex3]][nodeIndex3],dropoutProb);
         }
 
         if (useScaling) {
@@ -385,7 +385,7 @@ public class CustomCore extends BeerLikelihoodCore {
                         jointBranchRates[k], probs);
                 System.arraycopy(probs, 0, matrix, k * matrixSize, matrixSize);
             }
-            calculatePartialsPruning(helperNodePartials[1], matrix, nodePartials);
+            calculatePartialsPruning(helperNodePartials[1], matrix, nodePartials, substitutionModel.getDropoutProbability());
 
         } else {
             for (int k = 0; k < nrOfMatrices; k++) {
@@ -398,13 +398,13 @@ public class CustomCore extends BeerLikelihoodCore {
                 int[] states = new int[nrOfPatterns];
                 getNodeStates(childIndx, states);
 
-                calculateStatesPruning(states, matrix, nodePartials);
+                calculateStatesPruning(states, matrix, nodePartials, substitutionModel.getDropoutProbability());
 
             }else {
                 double[] partials = new double[partialsSize];
                 getNodePartials(childIndx, partials);
 
-                calculatePartialsPruning(partials, matrix, nodePartials);
+                calculatePartialsPruning(partials, matrix, nodePartials,substitutionModel.getDropoutProbability());
             }
         }
         setCurrentNodePartials(parent.getNr(), nodePartials);
@@ -428,7 +428,7 @@ public class CustomCore extends BeerLikelihoodCore {
                     substitutionModel.getTransitionProbabilities(null, parent.getHeight(), child.getHeight(), jointBranchRates[k], probs);
                     System.arraycopy(probs, 0, matrix, k * matrixSize, matrixSize);
                 }
-                helperNodePartials[i * 2 + 1] = calculateStatesPruning(states, matrix, helperNodePartials[i * 2 + 1]);
+                helperNodePartials[i * 2 + 1] = calculateStatesPruning(states, matrix, helperNodePartials[i * 2 + 1], substitutionModel.getDropoutProbability());
 
 
 
@@ -437,7 +437,7 @@ public class CustomCore extends BeerLikelihoodCore {
                     substitutionModel.getTransitionProbabilities(null, intNodeTimes[1], intNodeTimes[0], jointBranchRates[k], probs);
                     System.arraycopy(probs, 0, matrix, k * matrixSize, matrixSize);
                 }
-                helperNodePartials[i * 2] = calculateStatesPruning(states, matrix, helperNodePartials[i * 2]);
+                helperNodePartials[i * 2] = calculateStatesPruning(states, matrix, helperNodePartials[i * 2], substitutionModel.getDropoutProbability());
                 helperNodePartials[i * 2 + 1] = helperNodePartials[i * 2];
 
 
@@ -446,7 +446,7 @@ public class CustomCore extends BeerLikelihoodCore {
                         substitutionModel.getTransitionProbabilities(null, intNodeTimes[2], intNodeTimes[1], jointBranchRates[k], probs);
                         System.arraycopy(probs, 0, matrix, k * matrixSize, matrixSize);
                     }
-                    helperNodePartials[i * 2 + 1] = calculatePartialsPruning(helperNodePartials[i * 2], matrix, helperNodePartials[i * 2 + 1]);
+                    helperNodePartials[i * 2 + 1] = calculatePartialsPruning(helperNodePartials[i * 2], matrix, helperNodePartials[i * 2 + 1], substitutionModel.getDropoutProbability());
 
                 }
             }
@@ -459,7 +459,7 @@ public class CustomCore extends BeerLikelihoodCore {
                     substitutionModel.getTransitionProbabilities(null, parent.getHeight(), child.getHeight(), jointBranchRates[k], probs);
                     System.arraycopy(probs, 0, matrix, k * matrixSize, matrixSize);
                 }
-                    helperNodePartials[i * 2 + 1] = calculatePartialsPruning(partials, matrix, helperNodePartials[i * 2 + 1]);
+                    helperNodePartials[i * 2 + 1] = calculatePartialsPruning(partials, matrix, helperNodePartials[i * 2 + 1], substitutionModel.getDropoutProbability());
             } else {
 
                 helperNodePartials[i * 2] = partials;
@@ -468,7 +468,7 @@ public class CustomCore extends BeerLikelihoodCore {
                         substitutionModel.getTransitionProbabilities(null, intNodeTimes[j + 1], intNodeTimes[j], jointBranchRates[k], probs);
                         System.arraycopy(probs, 0, matrix, k * matrixSize, matrixSize);
                     }
-                    helperNodePartials[i * 2 + 1] = calculatePartialsPruning(helperNodePartials[i * 2], matrix, helperNodePartials[i * 2 + 1]);
+                    helperNodePartials[i * 2 + 1] = calculatePartialsPruning(helperNodePartials[i * 2], matrix, helperNodePartials[i * 2 + 1], substitutionModel.getDropoutProbability());
                     helperNodePartials[i * 2] = helperNodePartials[i * 2 + 1];
 
                 }
@@ -480,7 +480,7 @@ public class CustomCore extends BeerLikelihoodCore {
 
 
     protected double[] calculateStatesPruning(int[] stateIndex1, double[] matrices1,
-                                              double[] partials3) {
+                                              double[] partials3, double dropoutProb) {
         int v = 0;
 
         for (int l = 0; l < nrOfMatrices; l++) {
@@ -515,7 +515,7 @@ public class CustomCore extends BeerLikelihoodCore {
 
     // calculate partials for single child nodes
     protected double[] calculatePartialsPruning(double[] partials1, double[] matrices1,
-                                                double[] partials3) {
+                                                double[] partials3, double dropoutProb) {
         double sum1;
 
         int u = 0;
@@ -544,5 +544,122 @@ public class CustomCore extends BeerLikelihoodCore {
             }
         }
         return partials3;
+    }
+
+    /**
+     * Calculates partial likelihoods at a node when both children have states.
+     */
+    protected void calculateStatesStatesPruning(int[] stateIndex1, double[] matrices1,
+                                                int[] stateIndex2, double[] matrices2,
+                                                double[] partials3, double dropoutProb) {
+        int v = 0;
+
+        for (int l = 0; l < nrOfMatrices; l++) {
+
+            for (int k = 0; k < nrOfPatterns; k++) {
+
+                int state1 = stateIndex1[k];
+                int state2 = stateIndex2[k];
+
+                int w = l * matrixSize;
+
+                if (state1 < nrOfStates && state2 < nrOfStates) {
+
+                    for (int i = 0; i < nrOfStates; i++) {
+
+                        partials3[v] = matrices1[w + state1] * matrices2[w + state2];
+
+                        v++;
+                        w += nrOfStates;
+                    }
+
+                } else if (state1 < nrOfStates) {
+                    // child 2 has a gap or unknown state so treat it as unknown
+
+                    for (int i = 0; i < nrOfStates; i++) {
+
+                        partials3[v] = matrices1[w + state1];
+
+                        v++;
+                        w += nrOfStates;
+                    }
+                } else if (state2 < nrOfStates) {
+                    // child 2 has a gap or unknown state so treat it as unknown
+
+                    for (int i = 0; i < nrOfStates; i++) {
+
+                        partials3[v] = matrices2[w + state2];
+
+                        v++;
+                        w += nrOfStates;
+                    }
+                } else {
+                    // both children have a gap or unknown state so set partials to 1
+
+                    for (int j = 0; j < nrOfStates; j++) {
+                        partials3[v] = 1.0;
+                        v++;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Calculates partial likelihoods at a node when one child has states and one has partials.
+     */
+    protected void calculateStatesPartialsPruning(int[] stateIndex1, double[] matrices1,
+                                                  double[] partials2, double[] matrices2,
+                                                  double[] partials3, double dropoutProb) {
+
+        double sum, tmp;
+
+        int u = 0;
+        int v = 0;
+
+        for (int l = 0; l < nrOfMatrices; l++) {
+            for (int k = 0; k < nrOfPatterns; k++) {
+
+                int state1 = stateIndex1[k];
+
+                int w = l * matrixSize;
+
+                if (state1 < nrOfStates) {
+
+
+                    for (int i = 0; i < nrOfStates; i++) {
+
+                        tmp = matrices1[w + state1];
+
+                        sum = 0.0;
+                        for (int j = 0; j < nrOfStates; j++) {
+                            sum += matrices2[w] * partials2[v + j];
+                            w++;
+                        }
+
+                        partials3[u] = tmp * sum;
+                        u++;
+                    }
+
+                    v += nrOfStates;
+                } else {
+                    // Child 1 has a gap or unknown state so don't use it
+
+                    for (int i = 0; i < nrOfStates; i++) {
+
+                        sum = 0.0;
+                        for (int j = 0; j < nrOfStates; j++) {
+                            sum += matrices2[w] * partials2[v + j];
+                            w++;
+                        }
+
+                        partials3[u] = sum;
+                        u++;
+                    }
+
+                    v += nrOfStates;
+                }
+            }
+        }
     }
 }
