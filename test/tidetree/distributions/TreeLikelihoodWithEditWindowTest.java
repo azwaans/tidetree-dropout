@@ -328,6 +328,255 @@ public class TreeLikelihoodWithEditWindowTest {
     }
 
     @Test
+    public void testLikelihood3DropoutPartialsPruning(){
+        // when scarring window extends over the entire tree height
+        // -> calculation does not require a changing rate matrix nor helper nodes
+
+        // init alignment
+        Sequence a = new Sequence("0", "0,");
+        Sequence b3 = new Sequence("1", "3,");
+
+        Alignment alignment3 = new Alignment();
+        alignment3.initByName("sequence", a, "sequence", b3, "dataType", "integer", "stateCount", 3);
+
+        //init tree
+        tree3 = new TreeParser();
+        tree3.initByName("IsLabelledNewick", true, "taxa", alignment3, "newick",
+                "(0[&cluster=0]:25,1[&cluster=1]:25)2[&cluster=0]:0.0",
+                "adjustTipHeights", false, "offset", 0);
+
+        //init scarring model
+        RealParameter lossRate = new RealParameter("0.2");
+        RealParameter dropProb = new RealParameter("0.2");
+        RealParameter scarRates = new RealParameter("1.0 1.0");
+        RealParameter scarringHeight = new RealParameter("2.0");
+        RealParameter scarringDuration = new RealParameter("2.0");
+
+        RealParameter freqs = new RealParameter("1.0 0 0");
+        Frequencies frequencies = new Frequencies();
+        frequencies.initByName("frequencies", freqs,
+                "estimate", false);
+
+        EditAndSilencingModel scarringModel3 = new EditAndSilencingModel();
+        scarringModel3.initByName("editRates", scarRates,
+                "silencingRate", lossRate,
+                "editHeight", scarringHeight,
+                "editDuration", scarringDuration, "frequencies", frequencies, "missingProbability", dropProb);
+
+        // init site model
+        SiteModel siteM3 = new SiteModel();
+        siteM3.initByName( "gammaCategoryCount", 0, "substModel", scarringModel3);
+        StrictClockModel clockModel = new StrictClockModel();
+
+        likelihood3 = new TreeLikelihoodWithEditWindow();
+        likelihood3.initByName("data", alignment3, "tree", tree3,
+                "siteModel", siteM3, "branchRateModel", clockModel);
+
+
+        Node parent = tree3.getRoot();
+        Node child1 = parent.getChild(0);
+        Node child2 = parent.getChild(1);
+
+//        double[] partials = likelihood3.calculatePartialsBeforeParent(parent, child2, 1, 1,
+//                new double[]{0, 2.0, Double.NEGATIVE_INFINITY}, 1.0, 1);
+//        assertArrayEquals("Assert correct likelihood at helper node before parent", partials,
+//                new double[]{0.4637439631714886, 0.3296799539643607, 0.329679953964361, 1.0}, 1e-15);
+//
+//        partials = likelihood3.calculatePartialsBeforeParent(parent, child1, 0, 0,
+//                new double[]{0, 2.0, Double.NEGATIVE_INFINITY}, 1.0, 1);
+//        assertArrayEquals("Assert correct likelihood at helper node before parent", partials,
+//                new double[]{0.009821871922454749, 0, 0, 0}, 1e-15);
+//
+//        partials= likelihood3.calculatePartialsForCrossBranches(partials, parent, child1, child2,
+//                true, false);
+//        assertArrayEquals("Assert correct likelihood at parent", partials,
+//                new double[]{9.819566488911726E-5, 0, 0, 0}, 1e-15);
+
+
+        double logP = likelihood3.calculateLogP();
+        assertEquals(Math.log(9.819566488911726E-5), logP, 1e-14);
+    }
+
+
+
+    @Test
+    public void testLikelihood3DropoutStatesStatesPruning(){
+        // parent above scarring window, children within scarring window
+
+        // init alignment
+        Sequence a = new Sequence("0", "0,");
+        Sequence b3 = new Sequence("1", "3,");
+
+        Alignment alignment3 = new Alignment();
+        alignment3.initByName("sequence", a, "sequence", b3, "dataType", "integer", "stateCount", 3);
+
+        //init tree
+        tree3 = new TreeParser();
+        tree3.initByName("IsLabelledNewick", true, "taxa", alignment3, "newick",
+                "(0[&cluster=0]:25,1[&cluster=1]:25)2[&cluster=0]:0.0",
+                "adjustTipHeights", false, "offset", 0);
+
+        //init scarring model
+        RealParameter lossRate = new RealParameter("0.2");
+        RealParameter dropProb = new RealParameter("0.2");
+        RealParameter scarRates = new RealParameter("1.0 1.0");
+        RealParameter scarringHeight = new RealParameter("100");
+        RealParameter scarringDuration = new RealParameter("100");
+
+        RealParameter freqs = new RealParameter("1.0 0 0");
+        Frequencies frequencies = new Frequencies();
+        frequencies.initByName("frequencies", freqs,
+                "estimate", false);
+
+        EditAndSilencingModel scarringModel3 = new EditAndSilencingModel();
+        scarringModel3.initByName("editRates", scarRates,
+                "silencingRate", lossRate,
+                "editHeight", scarringHeight,
+                "editDuration", scarringDuration, "frequencies", frequencies, "missingProbability", dropProb);
+
+        // init site model
+        SiteModel siteM3 = new SiteModel();
+        siteM3.initByName( "gammaCategoryCount", 0, "substModel", scarringModel3);
+        StrictClockModel clockModel = new StrictClockModel();
+
+        likelihood3 = new TreeLikelihoodWithEditWindow();
+        likelihood3.initByName("data", alignment3, "tree", tree3,
+                "siteModel", siteM3, "branchRateModel", clockModel);
+
+
+        Node parent = tree3.getRoot();
+        Node child1 = parent.getChild(0);
+        Node child2 = parent.getChild(1);
+
+//                StatesStatesPruning output should be
+//                new double[]{1.0340609731178693E-24, 0, 0, 0}, 1e-15);
+
+
+
+
+        double logP = likelihood3.calculateLogP();
+        assertEquals(-55.22854848931031, logP, 1e-14);
+    }
+
+    @Test
+    public void testLikelihood3DropoutStatesStatesPruningScar(){
+        // parent above scarring window, children within scarring window
+
+        // init alignment
+        Sequence a = new Sequence("0", "1,");
+        Sequence b3 = new Sequence("1", "3,");
+
+        Alignment alignment3 = new Alignment();
+        alignment3.initByName("sequence", a, "sequence", b3, "dataType", "integer", "stateCount", 3);
+
+        //init tree
+        tree3 = new TreeParser();
+        tree3.initByName("IsLabelledNewick", true, "taxa", alignment3, "newick",
+                "(0[&cluster=0]:25,1[&cluster=1]:25)2[&cluster=0]:0.0",
+                "adjustTipHeights", false, "offset", 0);
+
+        //init scarring model
+        RealParameter lossRate = new RealParameter("0.2");
+        RealParameter dropProb = new RealParameter("0.2");
+        RealParameter scarRates = new RealParameter("1.0 1.0");
+        RealParameter scarringHeight = new RealParameter("100");
+        RealParameter scarringDuration = new RealParameter("100");
+
+        RealParameter freqs = new RealParameter("1.0 0 0");
+        Frequencies frequencies = new Frequencies();
+        frequencies.initByName("frequencies", freqs,
+                "estimate", false);
+
+        EditAndSilencingModel scarringModel3 = new EditAndSilencingModel();
+        scarringModel3.initByName("editRates", scarRates,
+                "silencingRate", lossRate,
+                "editHeight", scarringHeight,
+                "editDuration", scarringDuration, "frequencies", frequencies, "missingProbability", dropProb);
+
+        // init site model
+        SiteModel siteM3 = new SiteModel();
+        siteM3.initByName( "gammaCategoryCount", 0, "substModel", scarringModel3);
+        StrictClockModel clockModel = new StrictClockModel();
+
+        likelihood3 = new TreeLikelihoodWithEditWindow();
+        likelihood3.initByName("data", alignment3, "tree", tree3,
+                "siteModel", siteM3, "branchRateModel", clockModel);
+
+
+        Node parent = tree3.getRoot();
+        Node child1 = parent.getChild(0);
+        Node child2 = parent.getChild(1);
+
+//                StatesStatesPruning output should be
+//                new double[]{0.0026806508221101917, 0.005361301644220383, 0, 0}, 1e-15);
+
+
+
+
+        double logP = likelihood3.calculateLogP();
+        assertEquals(-5.921695669870253, logP, 1e-14);
+    }
+
+    @Test
+    public void testLikelihood3DropoutStatesStatesPruningMiss(){
+        // parent above scarring window, children within scarring window
+
+        // init alignment
+        Sequence a = new Sequence("0", "3,");
+        Sequence b3 = new Sequence("1", "3,");
+
+        Alignment alignment3 = new Alignment();
+        alignment3.initByName("sequence", a, "sequence", b3, "dataType", "integer", "stateCount", 3);
+
+        //init tree
+        tree3 = new TreeParser();
+        tree3.initByName("IsLabelledNewick", true, "taxa", alignment3, "newick",
+                "(0[&cluster=0]:25,1[&cluster=1]:25)2[&cluster=0]:0.0",
+                "adjustTipHeights", false, "offset", 0);
+
+        //init scarring model
+        RealParameter lossRate = new RealParameter("0.4");
+        RealParameter dropProb = new RealParameter("0.2");
+        RealParameter scarRates = new RealParameter("1.0 1.0");
+        RealParameter scarringHeight = new RealParameter("100");
+        RealParameter scarringDuration = new RealParameter("100");
+
+        RealParameter freqs = new RealParameter("1.0 0 0");
+        Frequencies frequencies = new Frequencies();
+        frequencies.initByName("frequencies", freqs,
+                "estimate", false);
+
+        EditAndSilencingModel scarringModel3 = new EditAndSilencingModel();
+        scarringModel3.initByName("editRates", scarRates,
+                "silencingRate", lossRate,
+                "editHeight", scarringHeight,
+                "editDuration", scarringDuration, "frequencies", frequencies, "missingProbability", dropProb);
+
+        // init site model
+        SiteModel siteM3 = new SiteModel();
+        siteM3.initByName( "gammaCategoryCount", 0, "substModel", scarringModel3);
+        StrictClockModel clockModel = new StrictClockModel();
+
+        likelihood3 = new TreeLikelihoodWithEditWindow();
+        likelihood3.initByName("data", alignment3, "tree", tree3,
+                "siteModel", siteM3, "branchRateModel", clockModel);
+
+
+        Node parent = tree3.getRoot();
+        Node child1 = parent.getChild(0);
+        Node child2 = parent.getChild(1);
+
+//                StatesStatesPruning output should be
+//                new double[]{0.0026806508221101917, 0.005361301644220383, 0, 0}, 1e-15);
+
+
+
+
+        double logP = likelihood3.calculateLogP();
+        assertEquals(-5.921695669870253, logP, 1e-14);
+    }
+
+    @Test
     public void testLikelihood3b(){
         // parent above scarring window, children within scarring window, 2 sites!
 

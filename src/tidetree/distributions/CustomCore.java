@@ -482,6 +482,7 @@ public class CustomCore extends BeerLikelihoodCore {
     protected double[] calculateStatesPruning(int[] stateIndex1, double[] matrices1,
                                               double[] partials3, double dropoutProb) {
         int v = 0;
+        double sum1;
 
         for (int l = 0; l < nrOfMatrices; l++) {
 
@@ -491,22 +492,31 @@ public class CustomCore extends BeerLikelihoodCore {
 
                 int w = l * matrixSize;
 
-                if (state1 < nrOfStates) {
+                //state is scarred
+                if (state1 < nrOfStates - 1) {
+
 
                     for (int i = 0; i < nrOfStates; i++) {
-
-                        partials3[v] = matrices1[w + state1];
+                        //state evolved to the observed state and didn't go missing
+                        partials3[v] = matrices1[w + state1] * (1 - dropoutProb);
 
                         v++;
                         w += nrOfStates;
                     }
 
+                    //state is silenced/lost
                 } else {
-                    // single child has a gap or unknown state so set partials to 1
-                    for (int j = 0; j < nrOfStates; j++) {
-                        partials3[v] = 1.0;
+
+
+                    for (int i = 0; i < nrOfStates; i++) {
+                        //state got silenced, and then went missing, or state evolved and went missing
+                        partials3[v] = matrices1[w + nrOfStates - 1] +  (1 - matrices1[w + nrOfStates - 1]) * (dropoutProb);
+
                         v++;
+                        w += nrOfStates;
                     }
+
+
                 }
             }
         }
@@ -554,6 +564,7 @@ public class CustomCore extends BeerLikelihoodCore {
                                                 double[] partials3, double dropoutProb) {
         int v = 0;
 
+
         for (int l = 0; l < nrOfMatrices; l++) {
 
             for (int k = 0; k < nrOfPatterns; k++) {
@@ -563,43 +574,52 @@ public class CustomCore extends BeerLikelihoodCore {
 
                 int w = l * matrixSize;
 
-                if (state1 < nrOfStates && state2 < nrOfStates) {
+                if (state1 < nrOfStates - 1  && state2 < nrOfStates - 1) {
 
                     for (int i = 0; i < nrOfStates; i++) {
-
-                        partials3[v] = matrices1[w + state1] * matrices2[w + state2];
+                        //both states evolved to the observed states and didn't go missing
+                        partials3[v] = matrices1[w + state1] *  (1 - dropoutProb) * matrices2[w + state2] * (1 - dropoutProb);
 
                         v++;
                         w += nrOfStates;
                     }
 
-                } else if (state1 < nrOfStates) {
-                    // child 2 has a gap or unknown state so treat it as unknown
+                } else if (state2 < nrOfStates - 1) {
+
+                    //from unedited to any state + dropout or from unedited to silenced + dropout
 
                     for (int i = 0; i < nrOfStates; i++) {
-
-                        partials3[v] = matrices1[w + state1];
+                        //one statee evolved to the observed state and didn't go missing
+                        //state got silenced, and then went missing, or state evolved and went missing
+                        partials3[v] = (matrices1[w + nrOfStates - 1] +  (1 - matrices1[w + nrOfStates - 1]) * (dropoutProb)) *  matrices2[w + state2] * (1 - dropoutProb);
 
                         v++;
                         w += nrOfStates;
                     }
-                } else if (state2 < nrOfStates) {
-                    // child 2 has a gap or unknown state so treat it as unknown
+
+
+                } else if (state1 < nrOfStates - 1) {
 
                     for (int i = 0; i < nrOfStates; i++) {
-
-                        partials3[v] = matrices2[w + state2];
+                        //one statee evolved to the observed state and didn't go missing
+                        //state got silenced, and then went missing, or state evolved and went missing
+                        partials3[v] = (matrices2[w + nrOfStates - 1] +  (1 - matrices2[w + nrOfStates - 1]) * (dropoutProb)) *  matrices1[w + state1] * (1 - dropoutProb);
 
                         v++;
                         w += nrOfStates;
                     }
+
                 } else {
-                    // both children have a gap or unknown state so set partials to 1
 
-                    for (int j = 0; j < nrOfStates; j++) {
-                        partials3[v] = 1.0;
+                    for (int i = 0; i < nrOfStates; i++) {
+                        //both states eithr got silenced, and then went missing, or state evolved and went missing
+                        partials3[v] = (matrices2[w + nrOfStates - 1] +  (1 - matrices2[w + nrOfStates - 1]) * (dropoutProb)) * (matrices1[w + nrOfStates - 1] +  (1 - matrices1[w + nrOfStates - 1]) * (dropoutProb));
+
                         v++;
+                        w += nrOfStates;
                     }
+
+
                 }
             }
         }
@@ -612,54 +632,62 @@ public class CustomCore extends BeerLikelihoodCore {
                                                   double[] partials2, double[] matrices2,
                                                   double[] partials3, double dropoutProb) {
 
-        double sum, tmp;
+        double sum1, sum2;
 
         int u = 0;
         int v = 0;
 
         for (int l = 0; l < nrOfMatrices; l++) {
+
             for (int k = 0; k < nrOfPatterns; k++) {
 
                 int state1 = stateIndex1[k];
-
                 int w = l * matrixSize;
 
-                if (state1 < nrOfStates) {
-
-
-                    for (int i = 0; i < nrOfStates; i++) {
-
-                        tmp = matrices1[w + state1];
-
-                        sum = 0.0;
-                        for (int j = 0; j < nrOfStates; j++) {
-                            sum += matrices2[w] * partials2[v + j];
-                            w++;
-                        }
-
-                        partials3[u] = tmp * sum;
-                        u++;
-                    }
-
-                    v += nrOfStates;
-                } else {
-                    // Child 1 has a gap or unknown state so don't use it
+                if(state1 < nrOfStates - 1) {
 
                     for (int i = 0; i < nrOfStates; i++) {
 
-                        sum = 0.0;
+                        sum1 = matrices1[w + state1] *  (1 - dropoutProb);
+                        sum2 = 0.0;
+
                         for (int j = 0; j < nrOfStates; j++) {
-                            sum += matrices2[w] * partials2[v + j];
+
+                            sum2 += matrices2[w] * partials2[v + j];
+
                             w++;
                         }
 
-                        partials3[u] = sum;
+                        partials3[u] = sum1 * sum2;
                         u++;
                     }
-
                     v += nrOfStates;
+
                 }
+                else {
+
+                    for (int i = 0; i < nrOfStates; i++) {
+
+                        sum1 = (matrices1[w + nrOfStates - 1] +  (1 - matrices1[w + nrOfStates - 1]) * (dropoutProb));
+                        sum2 = 0.0;
+
+                        for (int j = 0; j < nrOfStates; j++) {
+
+                            sum2 += matrices2[w] * partials2[v + j];
+
+                            w++;
+                        }
+
+                        partials3[u] = sum1 * sum2;
+                        u++;
+                    }
+                    v += nrOfStates;
+
+                }
+
+
             }
         }
+
     }
 }
