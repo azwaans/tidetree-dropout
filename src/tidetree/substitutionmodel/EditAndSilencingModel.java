@@ -2,6 +2,7 @@ package tidetree.substitutionmodel;
 
 import beast.base.core.Description;
 import beast.base.core.Input;
+import beast.base.inference.parameter.IntegerParameter;
 import beast.base.inference.parameter.RealParameter;
 import beast.base.evolution.datatype.DataType;
 import beast.base.evolution.datatype.IntegerData;
@@ -41,6 +42,9 @@ public class EditAndSilencingModel extends SubstitutionModel.Base {
         public Input<RealParameter> editDurationInput = new Input<>("editDuration",
                 "Duration of the edit process", Input.Validate.REQUIRED);
 
+    public Input<IntegerParameter> unobservedIndexInput = new Input<>("unobservedIndex",
+            "Index for the state that encodes potential dropouts", Input.Validate.REQUIRED);
+
 
         /**
          * flag to indicate matrix is up to date *
@@ -50,6 +54,7 @@ public class EditAndSilencingModel extends SubstitutionModel.Base {
 
 
         RealParameter editHeightP;
+        int unobservedIndex;
         RealParameter editDurationP;
         RealParameter missingProb;
         double[] frequencies;
@@ -112,6 +117,8 @@ public class EditAndSilencingModel extends SubstitutionModel.Base {
 
         editHeightP = editHeightInput.get();
         editDurationP = editDurationInput.get();
+
+        unobservedIndex = unobservedIndexInput.get().getValue();
     }
 
     /*
@@ -142,6 +149,13 @@ public class EditAndSilencingModel extends SubstitutionModel.Base {
     */
     public double getDropoutProbability(){
        return missingProb.getValue();
+    }
+
+    /*
+ get dropout probability
+  */
+    public int getUnobservedIndex(){
+        return unobservedIndex;
     }
 
     //Rename time to height

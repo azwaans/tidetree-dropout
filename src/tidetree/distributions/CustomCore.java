@@ -46,7 +46,7 @@ public class CustomCore extends BeerLikelihoodCore {
      * @param child2 the 'child 2' node
      * @param node the 'parent' node
      */
-    public void calculatePartials(Node child1, Node child2, Node node, double dropoutProb) {
+    public void calculatePartials(Node child1, Node child2, Node node, double dropoutProb, int unobservedIndex) {
 
         int nodeIndex1 = child1.getNr();
         int nodeIndex2 = child2.getNr();
@@ -57,17 +57,17 @@ public class CustomCore extends BeerLikelihoodCore {
                     calculateStatesStatesPruning(
                             states[nodeIndex1], matrices[currentMatrixIndex[nodeIndex1]][nodeIndex1],
                             states[nodeIndex2], matrices[currentMatrixIndex[nodeIndex2]][nodeIndex2],
-                            partials[currentPartialsIndex[nodeIndex3]][nodeIndex3], dropoutProb);
+                            partials[currentPartialsIndex[nodeIndex3]][nodeIndex3], dropoutProb,unobservedIndex);
                 } else {
                     calculateStatesPartialsPruning(states[nodeIndex1], matrices[currentMatrixIndex[nodeIndex1]][nodeIndex1],
                             partials[currentPartialsIndex[nodeIndex2]][nodeIndex2], matrices[currentMatrixIndex[nodeIndex2]][nodeIndex2],
-                            partials[currentPartialsIndex[nodeIndex3]][nodeIndex3], dropoutProb);
+                            partials[currentPartialsIndex[nodeIndex3]][nodeIndex3], dropoutProb, unobservedIndex);
                 }
             } else {
                 if (states[nodeIndex2] != null) {
                     calculateStatesPartialsPruning(states[nodeIndex2], matrices[currentMatrixIndex[nodeIndex2]][nodeIndex2],
                             partials[currentPartialsIndex[nodeIndex1]][nodeIndex1], matrices[currentMatrixIndex[nodeIndex1]][nodeIndex1],
-                            partials[currentPartialsIndex[nodeIndex3]][nodeIndex3], dropoutProb );
+                            partials[currentPartialsIndex[nodeIndex3]][nodeIndex3], dropoutProb, unobservedIndex );
                 } else {
                     calculatePartialsPartialsPruning(partials[currentPartialsIndex[nodeIndex1]][nodeIndex1], matrices[currentMatrixIndex[nodeIndex1]][nodeIndex1],
                             partials[currentPartialsIndex[nodeIndex2]][nodeIndex2], matrices[currentMatrixIndex[nodeIndex2]][nodeIndex2],
@@ -94,13 +94,13 @@ public class CustomCore extends BeerLikelihoodCore {
 //        }
     }
 
-    public void calculatePartials(Node child1, Node node, double dropoutProb) {
+    public void calculatePartials(Node child1, Node node, double dropoutProb, int unobservedIndex) {
 
         int nodeIndex1 = child1.getNr();
         int nodeIndex3 = node.getNr();
 
         if (states[nodeIndex1] != null) {
-            calculateStatesPruning(states[nodeIndex1],matrices[currentMatrixIndex[nodeIndex1]][nodeIndex1],partials[currentPartialsIndex[nodeIndex3]][nodeIndex3],dropoutProb);
+            calculateStatesPruning(states[nodeIndex1],matrices[currentMatrixIndex[nodeIndex1]][nodeIndex1],partials[currentPartialsIndex[nodeIndex3]][nodeIndex3],dropoutProb, unobservedIndex);
         } else {
             calculatePartialsPruning(partials[currentPartialsIndex[nodeIndex1]][nodeIndex1],
             matrices[currentMatrixIndex[nodeIndex1]][nodeIndex1], partials[currentPartialsIndex[nodeIndex3]][nodeIndex3],dropoutProb);
@@ -398,7 +398,7 @@ public class CustomCore extends BeerLikelihoodCore {
                 int[] states = new int[nrOfPatterns];
                 getNodeStates(childIndx, states);
 
-                calculateStatesPruning(states, matrix, nodePartials, substitutionModel.getDropoutProbability());
+                calculateStatesPruning(states, matrix, nodePartials, substitutionModel.getDropoutProbability(), substitutionModel.getUnobservedIndex());
 
             }else {
                 double[] partials = new double[partialsSize];
@@ -428,7 +428,7 @@ public class CustomCore extends BeerLikelihoodCore {
                     substitutionModel.getTransitionProbabilities(null, parent.getHeight(), child.getHeight(), jointBranchRates[k], probs);
                     System.arraycopy(probs, 0, matrix, k * matrixSize, matrixSize);
                 }
-                helperNodePartials[i * 2 + 1] = calculateStatesPruning(states, matrix, helperNodePartials[i * 2 + 1], substitutionModel.getDropoutProbability());
+                helperNodePartials[i * 2 + 1] = calculateStatesPruning(states, matrix, helperNodePartials[i * 2 + 1], substitutionModel.getDropoutProbability(), substitutionModel.getUnobservedIndex());
 
 
 
@@ -437,7 +437,7 @@ public class CustomCore extends BeerLikelihoodCore {
                     substitutionModel.getTransitionProbabilities(null, intNodeTimes[1], intNodeTimes[0], jointBranchRates[k], probs);
                     System.arraycopy(probs, 0, matrix, k * matrixSize, matrixSize);
                 }
-                helperNodePartials[i * 2] = calculateStatesPruning(states, matrix, helperNodePartials[i * 2], substitutionModel.getDropoutProbability());
+                helperNodePartials[i * 2] = calculateStatesPruning(states, matrix, helperNodePartials[i * 2], substitutionModel.getDropoutProbability(), substitutionModel.getUnobservedIndex());
                 helperNodePartials[i * 2 + 1] = helperNodePartials[i * 2];
 
 
@@ -480,7 +480,7 @@ public class CustomCore extends BeerLikelihoodCore {
 
 
     protected double[] calculateStatesPruning(int[] stateIndex1, double[] matrices1,
-                                              double[] partials3, double dropoutProb) {
+                                              double[] partials3, double dropoutProb, int unobservedIndex) {
         int v = 0;
         double sum1;
 
@@ -561,7 +561,7 @@ public class CustomCore extends BeerLikelihoodCore {
      */
     protected void calculateStatesStatesPruning(int[] stateIndex1, double[] matrices1,
                                                 int[] stateIndex2, double[] matrices2,
-                                                double[] partials3, double dropoutProb) {
+                                                double[] partials3, double dropoutProb, int unobservedIndex) {
         int v = 0;
 
 
@@ -630,7 +630,7 @@ public class CustomCore extends BeerLikelihoodCore {
      */
     protected void calculateStatesPartialsPruning(int[] stateIndex1, double[] matrices1,
                                                   double[] partials2, double[] matrices2,
-                                                  double[] partials3, double dropoutProb) {
+                                                  double[] partials3, double dropoutProb, int unobservedIndex) {
 
         double sum1, sum2;
 

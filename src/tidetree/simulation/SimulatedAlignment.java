@@ -324,7 +324,7 @@ public class SimulatedAlignment extends Alignment {
                     //see if the bcode goes missing
                     if (indicator < scarringModel.getDropoutProbability()) {
                         //the silenced/missing state is nStates - 1
-                        childSequence[i] = nStates - 1;
+                        childSequence[i] = scarringModel.getUnobservedIndex();
                     }
                 }
 

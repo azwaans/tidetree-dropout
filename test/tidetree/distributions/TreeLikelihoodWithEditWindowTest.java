@@ -1,5 +1,6 @@
 package tidetree.distributions;
 
+import beast.base.inference.parameter.IntegerParameter;
 import beast.base.inference.parameter.RealParameter;
 import beast.base.evolution.alignment.Alignment;
 import beast.base.evolution.alignment.Sequence;
@@ -39,6 +40,8 @@ public class TreeLikelihoodWithEditWindowTest {
         RealParameter scarRates = new RealParameter("1.0 1.0");
         RealParameter scarringHeight = new RealParameter("25.0");
         RealParameter scarringDuration = new RealParameter("2.0");
+        IntegerParameter unobservedIndex = new IntegerParameter("3");
+
 
         RealParameter freqs = new RealParameter("1.0 0 0");
         Frequencies frequencies = new Frequencies();
@@ -49,7 +52,7 @@ public class TreeLikelihoodWithEditWindowTest {
         scarringModel.initByName("editRates", scarRates,
                 "silencingRate", lossRate,
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies);
+                "editDuration", scarringDuration, "frequencies", frequencies, "unobservedIndex", unobservedIndex);
 
         // init site model
         SiteModel siteM = new SiteModel();
@@ -87,7 +90,7 @@ public class TreeLikelihoodWithEditWindowTest {
         RealParameter scarRates = new RealParameter("1.0 1.0");
         RealParameter scarringHeight = new RealParameter("25.0");
         RealParameter scarringDuration = new RealParameter("2.0");
-
+        IntegerParameter unobservedIndex = new IntegerParameter("2");
         RealParameter freqs = new RealParameter("1.0 0 0");
         Frequencies frequencies = new Frequencies();
         frequencies.initByName("frequencies", freqs,
@@ -97,7 +100,7 @@ public class TreeLikelihoodWithEditWindowTest {
         scarringModel.initByName("editRates", scarRates,
                 "silencingRate", lossRate,
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies);
+                "editDuration", scarringDuration, "frequencies", frequencies,"unobservedIndex", unobservedIndex );
 
         // init site model
         SiteModel siteM = new SiteModel();
@@ -152,17 +155,16 @@ public class TreeLikelihoodWithEditWindowTest {
         RealParameter scarRates = new RealParameter("1.0 1.0");
         RealParameter scarringHeight = new RealParameter("25.0");
         RealParameter scarringDuration = new RealParameter("2.0");
-
         RealParameter freqs = new RealParameter("1.0 0 0");
         Frequencies frequencies = new Frequencies();
         frequencies.initByName("frequencies", freqs,
                 "estimate", false);
-
+        IntegerParameter unobservedIndex = new IntegerParameter("2");
         EditAndSilencingModel scarringModel = new EditAndSilencingModel();
         scarringModel.initByName("editRates", scarRates,
                 "silencingRate", lossRate,
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies);
+                "editDuration", scarringDuration, "frequencies", frequencies, "unobservedIndex", unobservedIndex );
 
         // init site model
         RealParameter shape = new RealParameter("1.0");
@@ -219,7 +221,7 @@ public class TreeLikelihoodWithEditWindowTest {
         RealParameter scarRates = new RealParameter("1.0 1.0");
         RealParameter scarringHeight = new RealParameter("25.0");
         RealParameter scarringDuration = new RealParameter("2.0");
-
+        IntegerParameter unobservedIndex = new IntegerParameter("2");
         RealParameter freqs = new RealParameter("1.0 0 0");
         Frequencies frequencies = new Frequencies();
         frequencies.initByName("frequencies", freqs,
@@ -229,7 +231,7 @@ public class TreeLikelihoodWithEditWindowTest {
         scarringModel.initByName("editRates", scarRates,
                 "silencingRate", lossRate,
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies);
+                "editDuration", scarringDuration, "frequencies", frequencies, "unobservedIndex", unobservedIndex);
 
         // init site model
         SiteModel siteM = new SiteModel();
@@ -282,7 +284,7 @@ public class TreeLikelihoodWithEditWindowTest {
         RealParameter scarRates = new RealParameter("1.0 1.0");
         RealParameter scarringHeight = new RealParameter("2.0");
         RealParameter scarringDuration = new RealParameter("2.0");
-
+        IntegerParameter unobservedIndex = new IntegerParameter("2");
         RealParameter freqs = new RealParameter("1.0 0 0");
         Frequencies frequencies = new Frequencies();
         frequencies.initByName("frequencies", freqs,
@@ -292,7 +294,7 @@ public class TreeLikelihoodWithEditWindowTest {
         scarringModel3.initByName("editRates", scarRates,
                 "silencingRate", lossRate,
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies);
+                "editDuration", scarringDuration, "frequencies", frequencies, "unobservedIndex", unobservedIndex);
 
         // init site model
         SiteModel siteM3 = new SiteModel();
@@ -351,7 +353,7 @@ public class TreeLikelihoodWithEditWindowTest {
         RealParameter scarRates = new RealParameter("1.0 1.0");
         RealParameter scarringHeight = new RealParameter("2.0");
         RealParameter scarringDuration = new RealParameter("2.0");
-
+        IntegerParameter unobservedIndex = new IntegerParameter("3");
         RealParameter freqs = new RealParameter("1.0 0 0");
         Frequencies frequencies = new Frequencies();
         frequencies.initByName("frequencies", freqs,
@@ -361,7 +363,7 @@ public class TreeLikelihoodWithEditWindowTest {
         scarringModel3.initByName("editRates", scarRates,
                 "silencingRate", lossRate,
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies, "missingProbability", dropProb);
+                "editDuration", scarringDuration, "frequencies", frequencies, "missingProbability", dropProb, "unobservedIndex", unobservedIndex);
 
         // init site model
         SiteModel siteM3 = new SiteModel();
@@ -422,6 +424,7 @@ public class TreeLikelihoodWithEditWindowTest {
         RealParameter scarRates = new RealParameter("1.0 1.0");
         RealParameter scarringHeight = new RealParameter("100");
         RealParameter scarringDuration = new RealParameter("100");
+        IntegerParameter unobservedIndex = new IntegerParameter("3");
 
         RealParameter freqs = new RealParameter("1.0 0 0");
         Frequencies frequencies = new Frequencies();
@@ -432,7 +435,7 @@ public class TreeLikelihoodWithEditWindowTest {
         scarringModel3.initByName("editRates", scarRates,
                 "silencingRate", lossRate,
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies, "missingProbability", dropProb);
+                "editDuration", scarringDuration, "frequencies", frequencies, "missingProbability", dropProb, "unobservedIndex", unobservedIndex);
 
         // init site model
         SiteModel siteM3 = new SiteModel();
@@ -481,7 +484,7 @@ public class TreeLikelihoodWithEditWindowTest {
         RealParameter scarRates = new RealParameter("1.0 1.0");
         RealParameter scarringHeight = new RealParameter("100");
         RealParameter scarringDuration = new RealParameter("100");
-
+        IntegerParameter unobservedIndex = new IntegerParameter("3");
         RealParameter freqs = new RealParameter("1.0 0 0");
         Frequencies frequencies = new Frequencies();
         frequencies.initByName("frequencies", freqs,
@@ -491,7 +494,7 @@ public class TreeLikelihoodWithEditWindowTest {
         scarringModel3.initByName("editRates", scarRates,
                 "silencingRate", lossRate,
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies, "missingProbability", dropProb);
+                "editDuration", scarringDuration, "frequencies", frequencies, "missingProbability", dropProb, "unobservedIndex", unobservedIndex);
 
         // init site model
         SiteModel siteM3 = new SiteModel();
@@ -540,6 +543,7 @@ public class TreeLikelihoodWithEditWindowTest {
         RealParameter scarRates = new RealParameter("1.0 1.0");
         RealParameter scarringHeight = new RealParameter("100");
         RealParameter scarringDuration = new RealParameter("100");
+        IntegerParameter unobservedIndex = new IntegerParameter("3");
 
         RealParameter freqs = new RealParameter("1.0 0 0");
         Frequencies frequencies = new Frequencies();
@@ -550,7 +554,7 @@ public class TreeLikelihoodWithEditWindowTest {
         scarringModel3.initByName("editRates", scarRates,
                 "silencingRate", lossRate,
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies, "missingProbability", dropProb);
+                "editDuration", scarringDuration, "frequencies", frequencies, "missingProbability", dropProb, "unobservedIndex", unobservedIndex);
 
         // init site model
         SiteModel siteM3 = new SiteModel();
@@ -599,6 +603,7 @@ public class TreeLikelihoodWithEditWindowTest {
         RealParameter scarringHeight = new RealParameter("2.0");
         RealParameter scarringDuration = new RealParameter("2.0");
         //RealParameter scarRates = new RealParameter("0.0 0.0");
+        IntegerParameter unobservedIndex = new IntegerParameter("3");
 
         RealParameter freqs = new RealParameter("1.0 0 0");
         Frequencies frequencies = new Frequencies();
@@ -609,7 +614,7 @@ public class TreeLikelihoodWithEditWindowTest {
         scarringModel3.initByName("editRates", scarRates,
                 "silencingRate", lossRate,
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies);
+                "editDuration", scarringDuration, "frequencies", frequencies, "unobservedIndex", unobservedIndex);
 
         // init site model
         SiteModel siteM3 = new SiteModel();
@@ -667,11 +672,13 @@ public class TreeLikelihoodWithEditWindowTest {
 
         RealParameter scarringHeight = new RealParameter("100.0");
         RealParameter scarringDuration = new RealParameter("100.0");
+        IntegerParameter unobservedIndex = new IntegerParameter("2");
+
         EditAndSilencingModel scarringModel4 = new EditAndSilencingModel();
         scarringModel4.initByName("editRates", new RealParameter("0.01 0.01"),
                 "silencingRate", new RealParameter("0.01"),
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies);
+                "editDuration", scarringDuration, "frequencies", frequencies, "unobservedIndex", unobservedIndex);
 
         SiteModel siteM4 = new SiteModel();
         siteM4.initByName("gammaCategoryCount", 0, "substModel", scarringModel4);
@@ -716,12 +723,13 @@ public class TreeLikelihoodWithEditWindowTest {
                 "estimate", false);
         RealParameter scarringHeight = new RealParameter("25.0");
         RealParameter scarringDuration = new RealParameter("0.0");
+        IntegerParameter unobservedIndex = new IntegerParameter("2");
 
         EditAndSilencingModel scarringModel4 = new EditAndSilencingModel();
         scarringModel4.initByName("editRates", new RealParameter("0.01 0.01"),
                 "silencingRate", new RealParameter("0.01"),
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies);
+                "editDuration", scarringDuration, "frequencies", frequencies, "unobservedIndex", unobservedIndex);
 
         SiteModel siteM4 = new SiteModel();
         siteM4.initByName("gammaCategoryCount", 0, "substModel", scarringModel4);
@@ -745,9 +753,9 @@ public class TreeLikelihoodWithEditWindowTest {
         scarringModel4b.initByName("editRates", new RealParameter("0.01 0.01"),
                 "silencingRate", new RealParameter("0.01"),
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies);
+                "editDuration", scarringDuration, "frequencies", frequencies, "unobservedIndex", unobservedIndex);
 
-        siteM4.initByName("gammaCategoryCount", 0, "substModel", scarringModel4b);
+        siteM4.initByName("gammaCategoryCount", 0, "substModel", scarringModel4b );
 
         //init likelihood
         likelihood4.initByName("data", alignment2, "tree", tree2,
@@ -785,6 +793,7 @@ public class TreeLikelihoodWithEditWindowTest {
         RealParameter scarRates = new RealParameter("1.0 1.0");
         RealParameter scarringHeight = new RealParameter("25.0");
         RealParameter scarringDuration = new RealParameter("2.0");
+        IntegerParameter unobservedIndex = new IntegerParameter("2");
 
         RealParameter freqs = new RealParameter("1.0 0 0");
         Frequencies frequencies = new Frequencies();
@@ -795,7 +804,7 @@ public class TreeLikelihoodWithEditWindowTest {
         scarringModel.initByName("editRates", scarRates,
                 "silencingRate", lossRate,
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies);
+                "editDuration", scarringDuration, "frequencies", frequencies, "unobservedIndex", unobservedIndex);
 
         // init site model
         SiteModel siteM = new SiteModel();
@@ -838,6 +847,8 @@ public class TreeLikelihoodWithEditWindowTest {
         RealParameter scarRates = new RealParameter("1 1");
         RealParameter scarringHeight = new RealParameter("25.0");
         RealParameter scarringDuration = new RealParameter("2.0");
+        IntegerParameter unobservedIndex = new IntegerParameter("2");
+
 
         RealParameter freqs = new RealParameter("1.0 0 0 0");
         Frequencies frequencies = new Frequencies();
@@ -848,7 +859,7 @@ public class TreeLikelihoodWithEditWindowTest {
         scarringModel.initByName("editRates", scarRates,
                 "silencingRate", lossRate,
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies);
+                "editDuration", scarringDuration, "frequencies", frequencies, "unobservedIndex", unobservedIndex);
 
         // init site model
         SiteModel siteM = new SiteModel();
@@ -896,6 +907,9 @@ public class TreeLikelihoodWithEditWindowTest {
         RealParameter scarRates = new RealParameter("1 1");
         RealParameter scarringHeight = new RealParameter("25.0");
         RealParameter scarringDuration = new RealParameter("2.0");
+        IntegerParameter unobservedIndex = new IntegerParameter("2");
+
+
 
         RealParameter freqs = new RealParameter("1.0 0 0 0");
         Frequencies frequencies = new Frequencies();
@@ -906,7 +920,7 @@ public class TreeLikelihoodWithEditWindowTest {
         scarringModel.initByName("editRates", scarRates,
                 "silencingRate", lossRate,
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies);
+                "editDuration", scarringDuration, "frequencies", frequencies, "unobservedIndex", unobservedIndex);
 
         // init site model
         SiteModel siteM = new SiteModel();
@@ -976,6 +990,9 @@ public class TreeLikelihoodWithEditWindowTest {
         RealParameter scarRates = new RealParameter("1 1");
         RealParameter scarringHeight = new RealParameter("25.0");
         RealParameter scarringDuration = new RealParameter("2.0");
+        IntegerParameter unobservedIndex = new IntegerParameter("3");
+
+
 
         RealParameter freqs = new RealParameter("1.0 0 0 0");
         Frequencies frequencies = new Frequencies();
@@ -986,7 +1003,7 @@ public class TreeLikelihoodWithEditWindowTest {
         scarringModel.initByName("editRates", scarRates,
                 "silencingRate", lossRate,
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies);
+                "editDuration", scarringDuration, "frequencies", frequencies, "unobservedIndex", unobservedIndex);
 
         // init site model
         RealParameter shape = new RealParameter("1.0");
@@ -1069,6 +1086,8 @@ public class TreeLikelihoodWithEditWindowTest {
         RealParameter scarRates = new RealParameter("1 1");
         RealParameter scarringHeight = new RealParameter("25.0");
         RealParameter scarringDuration = new RealParameter("2.0");
+        IntegerParameter unobservedIndex = new IntegerParameter("3");
+
 
         RealParameter freqs = new RealParameter("1.0 0 0 0");
         Frequencies frequencies = new Frequencies();
@@ -1079,7 +1098,7 @@ public class TreeLikelihoodWithEditWindowTest {
         scarringModel.initByName("editRates", scarRates,
                 "silencingRate", lossRate,
                 "editHeight", scarringHeight,
-                "editDuration", scarringDuration, "frequencies", frequencies);
+                "editDuration", scarringDuration, "frequencies", frequencies, "unobservedIndex", unobservedIndex);
 
         // init site model
         RealParameter shape = new RealParameter("1.0");
